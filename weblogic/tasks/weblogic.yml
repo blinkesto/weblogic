@@ -1,0 +1,39 @@
+---
+- name: silent.xml
+  template:
+    src: templates/silent.xml.j2
+    dest: "{{ common.stage_dir}}/silent.xml"
+
+- name: Response
+  template:
+    src: templates/Response.rsp.j2
+    dest: "{{ common.stage_dir}}/Response.rsp"
+
+- name: oraInst
+  template:
+    src: templates/oraInst.loc.j2
+    dest: "{{ common.stage_dir}}/oraInst.loc"
+
+- name: "Copy {{ weblogic.install.binary }}"
+  copy:
+    src: files/{{ weblogic.install.binary }}
+    dest: "{{ common.stage_dir}}/{{ weblogic.install.binary }}"
+
+- name: Install weblogic
+  command: "/usr/local/bin/java -Xmx1024m -jar {{ common.stage_dir}}/{{ weblogic.install.binary }} -silent -responseFile {{ common.stage_dir}}/Response.rsp -invPtrLoc {{ common.stage_dir}}/oraInst.loc"
+  become: true
+  become_user: oracle
+  register: install_wls_out
+  changed_when: " 'The installation of Oracle Fusion Middleware 12c WebLogic Server and Coherence weblogic.version completed successfully.' in install_wls_out.stdout "
+
+- name: Stage create_domain.wlst
+  template:
+    src: templates/create_domain.wlst.j2
+    dest: "{{ common.stage_dir}}/create_domain.wlst"
+
+- name: Create Domain
+  command: "/opt/oracle/middleware/oracle_common/common/bin/wlst.sh {{ common.stage_dir}}/create_domain.wlst"
+  become: true
+  become_user: oracle
+  register: create_domain_out
+  changed_when: " 'Domain Created' in create_domain_out.stdout "

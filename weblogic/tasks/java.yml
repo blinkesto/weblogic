@@ -1,0 +1,16 @@
+---
+- name: "Stage {{ java.rpm }}"
+  copy:
+    src: "files/{{ java.rpm }}"
+    dest: "{{ common.stage_dir }}/{{ java.rpm }}"
+
+- name: "Install {{ java.rpm }}"
+  yum:
+    name: "{{ common.stage_dir }}/{{ java.rpm }}"
+    state: present
+
+- name: Create link
+  file:
+    src: "/usr/java/latest/bin/java"
+    dest: /usr/local/bin/java
+    state: link

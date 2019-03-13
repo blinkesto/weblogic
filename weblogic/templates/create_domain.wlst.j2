@@ -1,0 +1,31 @@
+print 'Creating the domain...'
+domainsDirectory = '{{ weblogic.domain.dir }}';
+domainName = '{{ weblogic.domain.name }}';
+readTemplate('{{ weblogic.wl_home }}/common/templates/wls/wls.jar');
+
+# Setting listen address/port
+cd('/Server/AdminServer')
+set('ListenAddress','');
+
+# SSL Settings
+#create('AdminServer', 'SSL')
+#cd('SSL/AdminServer')
+#set('Enabled', 'true');
+#set('ListenPort', 7002);
+
+# Setting the username/password
+cd('/Security/base_domain/User/weblogic');
+cmo.setPassword('bread4all');
+
+# Set some important domain options
+setOption('ServerStartMode', 'prod');
+setOption('JavaHome', '/usr/java/default/');
+setOption('OverwriteDomain', 'true');
+
+print 'Writing Domain: ' + domainsDirectory + '/' + domainName;
+writeDomain(domainsDirectory+'/'+domainName);
+closeTemplate();
+print 'Domain Created';
+
+print 'Exiting ...';
+exit();

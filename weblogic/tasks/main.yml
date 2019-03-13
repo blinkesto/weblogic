@@ -1,0 +1,6 @@
+---
+- include: common.yml
+
+- include: java.yml
+
+- include: weblogic.yml
