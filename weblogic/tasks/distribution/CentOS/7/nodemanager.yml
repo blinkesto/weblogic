@@ -1,4 +1,4 @@
-- name: Stage lifecycle scripts
+- name: Stage nodemanager scripts
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -10,22 +10,10 @@
     - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.properties" }
   when: ansible_distribution_major_version == '7'
 
-- name: Make sure a service is running
+- name: Start nodemanager
   systemd:
     state: started
     name: nodemanager
     daemon_reload: yes
     enabled: yes
   when: ansible_distribution_major_version == '7'
-
-- name: Stage lifecycle scripts
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: oracle
-    group: oinstall
-  with_items:
-    - { 'src': "templates/nodemanager/nodemanager.j2", 'dest' : "/usr/lib/systemd/system/nodemanager.service" }
-    - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.domains" }
-    - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.properties" }
-  when: ansible_distribution_major_version == '6'

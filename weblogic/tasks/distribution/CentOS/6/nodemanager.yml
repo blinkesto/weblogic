@@ -23,8 +23,9 @@
     path: /etc/init.d/nodemanager
     mode: 0755
 
-- name: Make sure a service is running
+- name: Start nodemanager
   service:
     name: nodemanager
     state: started
+    enabled: true
   when: ansible_distribution_major_version == '6'

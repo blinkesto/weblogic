@@ -24,6 +24,12 @@ def test_silent_xml(host):
     assert f.exists
 
 
+def test_nodemanager_service(host):
+    nodemanager = host.service("nodemanager")
+
+    assert nodemanager.is_running
+    assert nodemanager.is_enabled
+
 def test_nodemanagerport(host):
     nodemanager = host.socket("tcp://0.0.0.0:%s" % config["nodemanager"]["port"])
 
