@@ -16,6 +16,7 @@
     - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.domains" }
     - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.properties" }
     - { 'src': "templates/nodemanager/stop.wlst.j2", 'dest' : "{{ nodemanager.lifecycle_dir }}/stop.wlst" }
+    - { 'src': "templates/nodemanager/nm_password.properties.j2", 'dest' : "{{ domain.home }}/config/nodemanager/nm_password.properties" }
   when: ansible_distribution_major_version == '6'
 
 - name: Change permission for /etc/init.d/nodemanager
