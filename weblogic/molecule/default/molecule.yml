@@ -8,13 +8,18 @@ lint:
   enabled: False
 platforms:
   - name: centos7
-    image: centos:7
+    # Failed to get D-Bus connection: Operation not permitted
+    image: centos/systemd
     publish_all_ports: true
     port_bindings:
       - 7001:7001
-
     volumes:
       - /Users/koydooley/PycharmProjects/molecule/weblogic:/u01/oracle/properties
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    # Failed to get D-Bus connection: Operation not permitted
+    privileged: True
+    # Failed to get D-Bus connection: Operation not permitted
+    command: /sbin/init
 provisioner:
   name: ansible
   options:

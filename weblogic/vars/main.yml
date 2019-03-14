@@ -2,10 +2,17 @@
 # vars file for weblogic
 common:
   stage_dir: /opt/oracle/install/
+
   install_dirs:
     - /opt
-    - /opt/oracle/
-    - /opt/oracle/install/
+    - /opt/oracle
+    - /opt/oracle/install
+    - /opt/oracle/lifecycle
+
+domain:
+  name: base_domain
+  path: /opt/oracle/domains
+  home: /opt/oracle/domains/base_domain
 
 weblogic:
   version: 12.2.1.3.0
@@ -15,10 +22,19 @@ weblogic:
   inventory_loc: /opt/oracle/oraInventory
   install:
     binary: fmw_12.2.1.3.0_wls.jar
-  domain:
-    name: base_domain
-    dir: /opt/oracle/domains
 
+
+wlst:
+  bin: "{{ weblogic.mw_home }}/oracle_common/common/bin/wlst.sh"
+
+nodemanager:
+  user: weblogic
+  password: bread4all
+  host: "{{ inventory_hostname }}"
+  port: 5556
+  type: plain
+  lifecycle_dir: /opt/oracle/lifecycle/nodemanager
+  home: "{{ domain.path }}/{{ domain.name }}/nodemanager/"
 
 java:
   version: 1.8.0_161

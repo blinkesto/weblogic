@@ -1,0 +1,19 @@
+---
+- name: Check if domain is installed
+  stat:
+    path: "{{ domain.path }}/{{ domain.name }}"
+  register: domain_check
+
+- name: Stage create_domain.wlst
+  template:
+    src: templates/create_domain.wlst.j2
+    dest: "{{ common.stage_dir}}/create_domain.wlst"
+  when: domain_check.stat.exists == False
+
+- name: Create Domain
+  command: "{{ weblogic.mw_home }}/oracle_common/common/bin/wlst.sh {{ common.stage_dir }}/create_domain.wlst"
+  become: true
+  become_user: oracle
+  register: create_domain_out
+  changed_when: " 'Domain Created' in create_domain_out.stdout "
+  when: domain_check.stat.exists == False

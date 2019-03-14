@@ -1,8 +1,14 @@
 ---
+- name: Check if java binary is present
+  stat:
+    path: "{{ common.stage_dir }}/{{ java.rpm }}"
+  register: java_bin
+
 - name: "Stage {{ java.rpm }}"
   copy:
     src: "files/{{ java.rpm }}"
     dest: "{{ common.stage_dir }}/{{ java.rpm }}"
+  when: java_bin.stat.exists == False
 
 - name: "Install {{ java.rpm }}"
   yum:

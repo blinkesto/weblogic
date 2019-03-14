@@ -1,0 +1,5 @@
+domainsDirectory = '{{ weblogic.domain.dir }}'
+domainName = '{{ weblogic.domain.name }}'
+
+readDomain(domainsDirectory+'/'+domainName)
+

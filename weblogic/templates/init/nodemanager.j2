@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# /etc/init.d/nodemanager
+# init script for nodemanager.
+#
+# chkconfig: 2345 90 60
+# description: Init script for WebLogic Node Manager
+#
+RETVAL=0
+
+user='{{ nodemanager.user }}'
+password='{{ nodemanager.password }}'
+nm_host='{{ nodemanager.host }}'
+nm_port='{{ nodemanager.port }}'
+nm_type='{{ nodemanager.type }}'
+domain_name='{{ weblogic.domain.name }}'
+domain_path='{{ weblogic.domain.dir }}/{{ weblogic.domain.name }}'
+
+. /etc/init.d/functions
+
+nodemanager_start() {
+    echo Starting NodeManager...
+    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir  }}/start.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
+}
+nodemanager_stop() {
+    echo Stopping NodeManager...
+    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/nodemanager
+}
+nodemanager_restart() {
+    echo Restarting NodeManager...
+    nodemanager_stop && nodemanager_start
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
+}
+nodemanager_status() {
+    echo NodeManager status:
+    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir }}/status.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    RETVAL=$?
+}
+case "$1" in
+    start)
+        nodemanager_start
+        ;;
+    stop)
+        nodemanager_stop
+        ;;
+    restart)
+        nodemanager_restart
+        ;;
+    status)
+        nodemanager_status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit $RETVAL

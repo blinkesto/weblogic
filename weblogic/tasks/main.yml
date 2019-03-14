@@ -4,3 +4,9 @@
 - include: java.yml
 
 - include: weblogic.yml
+
+- include: domain.yml
+
+- include: nodemanager.yml
+
+

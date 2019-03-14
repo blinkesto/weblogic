@@ -1,0 +1,11 @@
+[Unit]
+Description=Node Manager Service
+After=network.target
+
+[Service]
+User=oracle
+Group=oinstall
+ExecStart={{ domain.home }}/bin/startNodeManager.sh
+
+[Install]
+WantedBy=multi-user.target

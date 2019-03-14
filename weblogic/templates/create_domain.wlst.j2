@@ -1,6 +1,6 @@
 print 'Creating the domain...'
-domainsDirectory = '{{ weblogic.domain.dir }}';
-domainName = '{{ weblogic.domain.name }}';
+domainsDirectory = '{{ domain.path }}';
+domainName = '{{ domain.name }}';
 readTemplate('{{ weblogic.wl_home }}/common/templates/wls/wls.jar');
 
 # Setting listen address/port
