@@ -22,27 +22,25 @@ nodemanager_start() {
     RETVAL=$?
     [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
 }
+
 nodemanager_stop() {
     echo Stopping NodeManager...
     su oracle -c "{{ wlst.bin }} {{ nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
     RETVAL=$?
     [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/nodemanager
 }
+
 nodemanager_restart() {
     echo Restarting NodeManager...
     nodemanager_stop && nodemanager_start
     RETVAL=$?
     [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
 }
+
 nodemanager_status() {
-
-    if [[ ! {{ nodemanager.home }}/nodemanager.process.id ]]; then
-        echo "FAILED";
-        return 3
-    fi
-    ps -ef | grep [w]eblogic.NodeManager >/dev/null && echo "OK"; return 0 || echo "FAILED"; return 1
-
+    ps -ef | grep [w]eblogic.NodeManager >/dev/null && RETVAL=0 || RETVAL=3
 }
+
 case "$1" in
     start)
         nodemanager_start
@@ -52,6 +50,9 @@ case "$1" in
         ;;
     restart)
         nodemanager_restart
+        ;;
+    status)
+        nodemanager_status
         ;;
     *)
         echo "Usage: $0 {start|stop|restart|status}"
