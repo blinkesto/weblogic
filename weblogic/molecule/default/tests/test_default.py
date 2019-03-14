@@ -8,7 +8,6 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 with open("../../vars/main.yml", 'r') as stream:
     try:
         config = yaml.load(stream)
-        print config["dirs"]
     except yaml.YAMLError as exc:
         print(exc)
 
@@ -19,14 +18,13 @@ def test_java(host):
     assert java.is_installed
 
 
-def test_install_jar(host):
-    f = host.file('%s/%s' % (config["common"]["stage_dir"]),
-                  config["weblogic"]["install"]["binary"])
-
-    assert f.exists
-
-
 def test_silent_xml(host):
     f = host.file('%s/silent.xml' % config["common"]["stage_dir"])
 
     assert f.exists
+
+
+def test_nodemanagerport(host):
+    nodemanager = host.socket("tcp://0.0.0.0:%s" % config["nodemanager"]["port"])
+
+    assert nodemanager.is_listening

@@ -1,0 +1,30 @@
+- name: Create required dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ nodemanager.lifecycle_dir }}"
+
+- name: Stage lifecycle scripts
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: oracle
+    group: oinstall
+  with_items:
+    - { 'src': "templates/nodemanager/nodemanager.j2", 'dest' : "/etc/init.d/nodemanager" }
+    - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.domains" }
+    - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ nodemanager.home }}/nodemanager.properties" }
+    - { 'src': "templates/nodemanager/stop.wlst.j2", 'dest' : "{{ nodemanager.lifecycle_dir }}/stop.wlst" }
+  when: ansible_distribution_major_version == '6'
+
+- name: Change permission for /etc/init.d/nodemanager
+  file:
+    path: /etc/init.d/nodemanager
+    mode: 0755
+
+- name: Make sure a service is running
+  service:
+    name: nodemanager
+    state: started
+  when: ansible_distribution_major_version == '6'

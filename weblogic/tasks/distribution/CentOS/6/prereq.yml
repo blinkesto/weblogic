@@ -1,0 +1,4 @@
+- name: Install system-config-services.noarch
+  yum:
+    name: system-config-services.noarch
+    state: latest

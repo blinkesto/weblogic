@@ -18,3 +18,8 @@
     owner: oracle
     group: oinstall
   with_items: "{{ common.install_dirs }}"
+
+- name: Install netstat
+  yum:
+    name: net-tools
+    state: latest

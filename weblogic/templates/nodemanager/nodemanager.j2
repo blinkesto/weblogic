@@ -13,20 +13,18 @@ password='{{ nodemanager.password }}'
 nm_host='{{ nodemanager.host }}'
 nm_port='{{ nodemanager.port }}'
 nm_type='{{ nodemanager.type }}'
-domain_name='{{ weblogic.domain.name }}'
-domain_path='{{ weblogic.domain.dir }}/{{ weblogic.domain.name }}'
-
-. /etc/init.d/functions
+domain_name='{{ domain.name }}'
+domain_path='{{ domain.path }}/{{ domain.name }}'
 
 nodemanager_start() {
     echo Starting NodeManager...
-    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir  }}/start.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    su oracle -c "nohup {{ domain.home }}/bin/startNodeManager.sh &"
     RETVAL=$?
     [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
 }
 nodemanager_stop() {
     echo Stopping NodeManager...
-    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    su oracle -c "{{ wlst.bin }} {{ nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
     RETVAL=$?
     [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/nodemanager
 }
@@ -37,9 +35,13 @@ nodemanager_restart() {
     [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
 }
 nodemanager_status() {
-    echo NodeManager status:
-    su oracle -c "{{ wlst }} {{ nodemanager.lifecycle_dir }}/status.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
-    RETVAL=$?
+
+    if [[ ! {{ nodemanager.home }}/nodemanager.process.id ]]; then
+        echo "FAILED";
+        return 3
+    fi
+    ps -ef | grep [w]eblogic.NodeManager >/dev/null && echo "OK"; return 0 || echo "FAILED"; return 1
+
 }
 case "$1" in
     start)

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-{{ wlst.bin }} {{ nodemanager.lifecycle_dir  }}/stop.wlst -u {{ nodemanager.user }} -c {{ nodemanager.password }} -h {{ nodemanager.host }} -o {{ nodemanager.port }} -n {{ weblogic.domain.name }} -d {{ weblogic.domain.dir }} -t {{ nodemanager.type }}
