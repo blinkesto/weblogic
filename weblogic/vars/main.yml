@@ -1,5 +1,6 @@
 ---
 # ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 os_user: oracle
 os_group: oinstall
 admin_user: "weblogic"
@@ -19,14 +20,16 @@ nodemanager_template: &nodemanager_template
   port: 5556
   type: plain
   lifecycle_dir: "{{ oracle_base }}/lifecycle/nodemanager"
+  home: ""
 
 managedserver_template: &managedserver_template
   port: "7001"
-  nodemanager: *nodemanager_template
+
 
 domain_template: &domain_template
   path: "{{ domain_base }}"
   template_dir: templates/domain
+  nodemanager: *nodemanager_template
   managedservers:
     - <<: *managedserver_template
       name: "ms1"

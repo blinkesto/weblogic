@@ -8,24 +8,24 @@
 #
 RETVAL=0
 
-user='{{ nodemanager.user }}'
-password='{{ nodemanager.password }}'
-nm_host='{{ nodemanager.host }}'
-nm_port='{{ nodemanager.port }}'
-nm_type='{{ nodemanager.type }}'
+user='{{ domain.nodemanager.user }}'
+password='{{ domain.nodemanager.password }}'
+nm_host='{{ domain.nodemanager.host }}'
+nm_port='{{ domain.nodemanager.port }}'
+nm_type='{{ domain.nodemanager.type }}'
 domain_name='{{ domain.name }}'
 domain_path='{{ domain.path }}/{{ domain.name }}'
 
 nodemanager_start() {
     echo Starting NodeManager...
-    su oracle -c "nohup {{ domain.home }}/bin/startNodeManager.sh &"
+    su oracle -c "nohup {{ domain.path }}/{{ domain.name }}/bin/startNodeManager.sh &"
     RETVAL=$?
     [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nodemanager
 }
 
 nodemanager_stop() {
     echo Stopping NodeManager...
-    su oracle -c "{{ wlst.bin }} {{ nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
+    su oracle -c "{{ wlst.bin }} {{ domain.nodemanager.lifecycle_dir }}/stop.wlst -u $user -c $password -h $nm_host -o $nm_port -n $domain_name -d $domain_path -t $nm_type"
     RETVAL=$?
     [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/nodemanager
 }

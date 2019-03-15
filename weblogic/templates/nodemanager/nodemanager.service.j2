@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=oracle
 Group=oinstall
-ExecStart={{ domain.home }}/bin/startNodeManager.sh
+ExecStart={{ domain.path }}/{{ domain.name }}/bin/startNodeManager.sh
 
 [Install]
 WantedBy=multi-user.target

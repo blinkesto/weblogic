@@ -1,9 +1,7 @@
 - name: Message
   debug:
-    msg: "Creating Node Manager for server '{{ managedserver.name }}' in domain '{{ domain.name }}'"
+    msg: "Creating Node Manager for domain '{{ domain.name }}'"
   tags:
-    - domain
-    - managedserver
     - nodemanager
 
 - name: Create required dirs
@@ -11,9 +9,11 @@
     path: "{{ nodemanager_dir_item }}"
     state: directory
   with_items:
-    - "{{ managedserver.nodemanager.lifecycle_dir }}"
+    - "{{ domain.nodemanager.lifecycle_dir }}"
   loop_control:
     loop_var: nodemanager_dir_item
+  tags:
+    - nodemanager
 
 - name: Stage lifecycle scripts
   template:
@@ -23,22 +23,28 @@
     group: oinstall
   with_items:
     - { 'src': "templates/nodemanager/nodemanager.j2", 'dest' : "/etc/init.d/nodemanager_{{ domain.name }}" }
-    - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ managedserver.nodemanager.home }}/nodemanager.domains" }
-    - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ managedserver.nodemanager.home }}/nodemanager.properties" }
-    - { 'src': "templates/nodemanager/stop.wlst.j2", 'dest' : "{{ managedserver.nodemanager.lifecycle_dir }}/stop.wlst" }
-    - { 'src': "templates/nodemanager/nm_password.properties.j2", 'dest' : "{{ domain.home }}/config/nodemanager/nm_password.properties" }
+    - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.domains" }
+    - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.properties" }
+    - { 'src': "templates/nodemanager/stop.wlst.j2", 'dest' : "{{ domain.nodemanager.lifecycle_dir }}/stop.wlst" }
+    - { 'src': "templates/nodemanager/nm_password.properties.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/config/nodemanager/nm_password.properties" }
   loop_control:
     loop_var: nodemanager_scipt_item
   when: ansible_distribution_major_version == '6'
+  tags:
+    - nodemanager
 
 - name: Change permission for /etc/init.d/nodemanager
   file:
-    path: /etc/init.d/nodemanager
+    path: "/etc/init.d/nodemanager_{{ domain.name }}"
     mode: 0755
+  tags:
+    - nodemanager
 
 - name: Start nodemanager
   service:
-    name: nodemanager
+    name: "nodemanager_{{ domain.name }}"
     state: started
     enabled: true
   when: ansible_distribution_major_version == '6'
+  tags:
+    - nodemanager

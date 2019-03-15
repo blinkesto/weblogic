@@ -38,9 +38,12 @@
     loop_var: domain_items
   tags:
     - domain
+    - managedserver
 
-#- include: "distribution/{{ ansible_distribution }}/{{ ansible_distribution_major_version }}/nodemanager.yml"
-#  tags:
-#    - domain
-#    - managedserver
-#    - nodemanager
+- include: "distribution/{{ ansible_distribution }}/{{ ansible_distribution_major_version }}/nodemanager.yml domain={{ domain_items }}"
+  with_items: "{{ domains }}"
+  loop_control:
+    loop_var: domain_items
+  tags:
+    - domain
+    - nodemanager
