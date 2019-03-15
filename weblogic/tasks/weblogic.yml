@@ -1,28 +1,32 @@
 ---
+# Files
+
+# Templates
+
 - name: silent.xml
   template:
     src: templates/silent.xml.j2
-    dest: "{{ common.stage_dir}}/silent.xml"
+    dest: "{{ stage_dir }}/silent.xml"
 
 - name: Response
   template:
     src: templates/Response.rsp.j2
-    dest: "{{ common.stage_dir}}/Response.rsp"
+    dest: "{{ stage_dir }}/Response.rsp"
 
 - name: oraInst
   template:
     src: templates/oraInst.loc.j2
-    dest: "{{ common.stage_dir}}/oraInst.loc"
+    dest: "{{ stage_dir }}/oraInst.loc"
 
 - name: Check if weblogic binary is present
   stat:
-    path: "{{ common.stage_dir}}/{{ weblogic.install.binary }}"
+    path: "{{ stage_dir }}/{{ weblogic.install.binary }}"
   register: weblogic_bin
 
 - name: "Copy {{ weblogic.install.binary }}"
   copy:
     src: files/{{ weblogic.install.binary }}
-    dest: "{{ common.stage_dir}}/{{ weblogic.install.binary }}"
+    dest: "{{ stage_dir }}/{{ weblogic.install.binary }}"
   when: weblogic_bin.stat.exists == False
 
 - name: Check if weblogic is installed
@@ -31,17 +35,9 @@
   register: weblogic_jar
 
 - name: Install weblogic
-  command: "{{ java.bin }} -Xmx1024m -jar {{ common.stage_dir}}/{{ weblogic.install.binary }} -silent -responseFile {{ common.stage_dir}}/Response.rsp -invPtrLoc {{ common.stage_dir}}/oraInst.loc"
+  command: "{{ java.bin }} -Xmx1024m -jar {{ stage_dir }}/{{ weblogic.install.binary }} -silent -responseFile {{ stage_dir }}/Response.rsp -invPtrLoc {{ stage_dir }}/oraInst.loc"
   become: true
-  become_user: oracle
+  become_user: "{{ os_user }}"
   register: install_wls_out
   changed_when: " 'The installation of Oracle Fusion Middleware 12c WebLogic Server and Coherence weblogic.version completed successfully.' in install_wls_out.stdout "
   when: weblogic_jar.stat.exists == False
-
-
-
-
-
-
-
-

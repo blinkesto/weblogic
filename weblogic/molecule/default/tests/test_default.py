@@ -30,7 +30,8 @@ def test_nodemanager_service(host):
     assert nodemanager.is_running
     assert nodemanager.is_enabled
 
-def test_nodemanagerport(host):
+
+def test_nodemanager_port(host):
     nodemanager = host.socket("tcp://0.0.0.0:%s" % config["nodemanager"]["port"])
 
     assert nodemanager.is_listening

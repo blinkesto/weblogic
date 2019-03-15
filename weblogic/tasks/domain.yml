@@ -3,17 +3,29 @@
   stat:
     path: "{{ domain.path }}/{{ domain.name }}"
   register: domain_check
-
+  tags:
+    - domain
+    -
+- name: Message
+  debug:
+    msg: "Creating Domain: {{ domain.name }}"
+  when: domain_check.stat.exists == False
+  tags:
+    - domain
+    -
 - name: Stage create_domain.wlst
   template:
     src: "{{ domain.template_dir }}/create_domain.wlst.j2"
-    dest: "{{ common.stage_dir}}/create_domain.wlst"
-  when: domain_check.stat.exists == False
-
+    dest: "{{ stage_dir }}/create_{{ domain.name }}.wlst"
+  tags:
+    - domain
+    -
 - name: Create Domain
-  command: "{{ weblogic.mw_home }}/oracle_common/common/bin/wlst.sh {{ common.stage_dir }}/create_domain.wlst"
+  command: "{{ weblogic.mw_home }}/oracle_common/common/bin/wlst.sh {{ stage_dir }}/create_{{ domain.name }}.wlst"
   become: true
-  become_user: oracle
+  become_user: "{{ os_user }}"
   register: create_domain_out
   changed_when: " 'Domain Created' in create_domain_out.stdout "
   when: domain_check.stat.exists == False
+  tags:
+    - domain

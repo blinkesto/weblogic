@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Weblogic install 
+Weblogic 
 
 Requirements
 ------------

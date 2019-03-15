@@ -1,0 +1,10 @@
+---
+- name: Message
+  debug:
+    msg: "Creating Managed Server '{{ item.name }}' in domain '{{ domain.name }}'"
+  with_items: "{{ domain.managedservers }}"
+  tags:
+    - domain
+    - managedserver
+
+

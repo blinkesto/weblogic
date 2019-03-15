@@ -1,22 +1,32 @@
 ---
-- name: Check if java binary is present
-  stat:
-    path: "{{ common.stage_dir }}/{{ java.rpm }}"
-  register: java_bin
+# Check if we can skip
+- name: Check if rpm is installed
+  shell: "rpm -qa {{ java.package_name }} | grep {{ java.package_name }}"
+  register: java_installed
+  ignore_errors: true
 
-- name: "Stage {{ java.rpm }}"
-  copy:
-    src: "files/{{ java.rpm }}"
-    dest: "{{ common.stage_dir }}/{{ java.rpm }}"
-  when: java_bin.stat.exists == False
-
-- name: "Install {{ java.rpm }}"
-  yum:
-    name: "{{ common.stage_dir }}/{{ java.rpm }}"
-    state: present
-
-- name: Create link
-  file:
-    src: "/usr/java/latest/bin/java"
-    dest: /usr/local/bin/java
-    state: link
+- name: print
+  debug:
+    msg: "{{ java_installed }}"
+# Stage files
+# Template files
+# Install
+# Create links
+# Test run
+- name: Java Install
+  block:
+  - stat:
+      path: "{{ stage_dir }}/{{ java.rpm }}"
+    register: java_bin
+  - copy:
+      src: "files/{{ java.rpm }}"
+      dest: "{{ stage_dir }}/{{ java.rpm }}"
+    when: java_bin.stat.exists == False
+  - yum:
+      name: "{{ stage_dir }}/{{ java.rpm }}"
+      state: present
+  - file:
+      src: "/usr/java/latest/bin/java"
+      dest: "{{ java.bin }}"
+      state: link
+  when: " java.package_name not in java_installed.stdout "
