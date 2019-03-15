@@ -23,13 +23,16 @@
     dest: "{{ oracle_base }}/bin/start.wlst"
     owner: "{{ os_user }}"
     group: "{{ os_group }}"
+  tags:
+    - domain
+    - managedserver
 
+- name: Stage stop script
   template:
     src: templates/managedserver/stop.wlst.j2
     dest: "{{ oracle_base }}/bin/stop.wlst"
     owner: "{{ os_user }}"
     group: "{{ os_group }}"
-
   tags:
     - domain
     - managedserver
