@@ -19,7 +19,7 @@
     dest: "{{ stage_dir }}/create_{{ domain.name }}.wlst"
   tags:
     - domain
-    -
+
 - name: Create Domain
   command: "{{ weblogic.mw_home }}/oracle_common/common/bin/wlst.sh {{ stage_dir }}/create_{{ domain.name }}.wlst"
   become: true
@@ -27,5 +27,23 @@
   register: create_domain_out
   changed_when: " 'Domain Created' in create_domain_out.stdout "
   when: domain_check.stat.exists == False
+  tags:
+    - domain
+
+- name: Create security dir
+  file:
+    path: "{{ domain.path }}/{{ domain.name }}/servers/{{ domain.adminserver }}/security"
+    state: directory
+  become: true
+  become_user: "{{ os_user }}"
+  tags:
+    - domain
+
+- name: Create boot.properties
+  template:
+    src: "{{ domain.template_dir }}/boot.properties.j2"
+    dest: "{{ domain.path }}/{{ domain.name }}/servers/{{ domain.adminserver }}/security/boot.properties"
+  become: true
+  become_user: "{{ os_user }}"
   tags:
     - domain

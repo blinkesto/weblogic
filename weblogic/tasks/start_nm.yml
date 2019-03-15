@@ -1,0 +1,21 @@
+---
+- name: Start nodemanager
+  service:
+    name: "nodemanager_{{ domain.name }}"
+    state: started
+    enabled: true
+  when: ansible_distribution_major_version == '6'
+  tags:
+    - start
+    - nodemanager
+
+- name: Start nodemanager
+  systemd:
+    state: started
+    name: "nodemanager_{{ domain.name }}"
+    daemon_reload: yes
+    enabled: yes
+  when: ansible_distribution_major_version == '7'
+  tags:
+    - start
+    - nodemanager

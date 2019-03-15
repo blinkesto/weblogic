@@ -5,7 +5,7 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
-with open("../../vars/main.yml", 'r') as stream:
+with open("/Users/koydooley/PycharmProjects/molecule/weblogic/molecule/default/tests/flat.yml", 'r') as stream:
     try:
         config = yaml.load(stream)
     except yaml.YAMLError as exc:
@@ -19,7 +19,7 @@ def test_java(host):
 
 
 def test_silent_xml(host):
-    f = host.file('%s/silent.xml' % config["common"]["stage_dir"])
+    f = host.file('%s/silent.xml' % config["stage_dir"])
 
     assert f.exists
 

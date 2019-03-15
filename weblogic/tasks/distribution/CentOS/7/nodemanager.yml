@@ -14,6 +14,7 @@
     - { 'src': "templates/nodemanager/nodemanager.service.j2", 'dest' : "/usr/lib/systemd/system/nodemanager_{{ domain.name }}.service" }
     - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.domains" }
     - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.properties" }
+    - { 'src': "templates/nodemanager/nm_password.properties.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/config/nodemanager/nm_password.properties" }
   when: ansible_distribution_major_version == '7'
   tags:
     - domain

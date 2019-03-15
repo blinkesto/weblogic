@@ -47,3 +47,24 @@
   tags:
     - domain
     - nodemanager
+
+- include: start_nm.yml domain="{{ domain_items }}"
+  with_items: "{{ domains }}"
+  loop_control:
+    loop_var: domain_items
+  tags:
+    - start
+
+- include: start_admin.yml domain="{{ domain_items }}"
+  with_items: "{{ domains }}"
+  loop_control:
+    loop_var: domain_items
+  tags:
+    - start
+
+- include: stop_admin.yml domain="{{ domain_items }}"
+  with_items: "{{ domains }}"
+  loop_control:
+    loop_var: domain_items
+  tags:
+    - stop

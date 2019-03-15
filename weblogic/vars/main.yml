@@ -28,8 +28,11 @@ managedserver_template: &managedserver_template
 
 domain_template: &domain_template
   path: "{{ domain_base }}"
+  adminserver: "AdminServer"
   template_dir: templates/domain
-  nodemanager: *nodemanager_template
+  nodemanager:
+    <<: *nodemanager_template
+    port: 5556
   managedservers:
     - <<: *managedserver_template
       name: "ms1"
@@ -60,7 +63,7 @@ domains:
 mw_home: "{{ oracle_base }}/middleware"
 wl_home: "{{ mw_home }}/wlserver"
 wls_home: "{{ wl_home }}/server"
-oracle_common_home: "{{ mw_home }}/oracle_commom"
+oracle_common_home: "{{ mw_home }}/oracle_common"
 
 java_major: "8"
 java_version: "1.{{ java_major }}.0_{{ java_minor }}"
@@ -88,12 +91,6 @@ common:
     - "{{ oracle_base }}"
     - "{{ stage_dir }}"
 
-#domain:
-#  name: "{{ domain_name }}"
-#  path: "{{ domain_base }}"
-#  home: "{{ domain_base }}/{{ domain_name }}"
-#  template_dir: templates/domain
-
 weblogic:
   version: "{{ weblogic_version }}"
   mw_home: "{{ mw_home }}"
@@ -102,13 +99,3 @@ weblogic:
   inventory_loc: "{{ oracle_base }}/oraInventory"
   install:
     binary: "fmw_{{ weblogic_version }}_wls.jar"
-
-#nodemanager:
-#  user: "{{ admin_user }}"
-#  password: "{{ admin_password }}"
-#  host: "{{ inventory_hostname }}"
-#  address:
-#  port: 5556
-#  type: plain
-#  lifecycle_dir: "{{ oracle_base }}/lifecycle/nodemanager"
-#  home: "{{ domain.path }}/{{ domain.name }}/nodemanager"

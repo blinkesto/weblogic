@@ -1,0 +1,5 @@
+---
+- name: Stop Admin
+  shell: "{{ wlst.bin }} {{ oracle_base }}/bin/stop.wlst -u {{ admin_user }} -c {{ admin_password }} -h {{ domain.nodemanager.host }} -o {{ domain.nodemanager.port }} -t {{ domain.nodemanager.type }} -n {{ domain.name }} -m {{ domain.adminserver }} -d {{ domain_base }}/{{ domain.name }}"
+  tags:
+    - stop

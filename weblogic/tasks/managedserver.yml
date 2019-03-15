@@ -7,4 +7,29 @@
     - domain
     - managedserver
 
+- name: Create bin dir
+  file:
+    path: "{{ oracle_base }}/bin"
+    state: directory
+  become: true
+  become_user: "{{ os_user }}"
+  tags:
+    - domain
+    - managedserver
 
+- name: Stage start script
+  template:
+    src: templates/managedserver/start.wlst.j2
+    dest: "{{ oracle_base }}/bin/start.wlst"
+    owner: "{{ os_user }}"
+    group: "{{ os_group }}"
+
+  template:
+    src: templates/managedserver/stop.wlst.j2
+    dest: "{{ oracle_base }}/bin/stop.wlst"
+    owner: "{{ os_user }}"
+    group: "{{ os_group }}"
+
+  tags:
+    - domain
+    - managedserver
