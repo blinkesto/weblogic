@@ -8,27 +8,27 @@ lint:
   enabled: True
 
 platforms:
-  - name: instance1
-    image: centos:6
-    publish_all_ports: true
-    port_bindings:
-      - 17001:7001
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: True
-
-#  - name: instance2
-#    # Failed to get D-Bus connection: Operation not permitted
-#    image: centos/systemd
+#  - name: instance1
+#    image: centos:6
 #    publish_all_ports: true
 #    port_bindings:
-#      - 7001:7001
+#      - 17001:7001
 #    volumes:
 #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-#    # Failed to get D-Bus connection: Operation not permitted
 #    privileged: True
-#    # Failed to get D-Bus connection: Operation not permitted
-#    command: /sbin/init
+
+  - name: instance2
+    # Failed to get D-Bus connection: Operation not permitted
+    image: centos/systemd
+    publish_all_ports: true
+    port_bindings:
+      - 7001:7001
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    # Failed to get D-Bus connection: Operation not permitted
+    privileged: True
+    # Failed to get D-Bus connection: Operation not permitted
+    command: /sbin/init
 
 provisioner:
   name: ansible

@@ -12,16 +12,14 @@ with open("../../vars/main.yml", 'r') as stream:
         print(exc)
 
 
-def test_java(host):
-    java = host.package('%s' % config["java"]["package_name"])
+def test_nodemanager_service(host):
+    nodemanager = host.service("nodemanager")
 
-    assert java.is_installed
-
-
-def test_silent_xml(host):
-    f = host.file('%s/silent.xml' % config["common"]["stage_dir"])
-
-    assert f.exists
+    assert nodemanager.is_running
+    assert nodemanager.is_enabled
 
 
+def test_nodemanager_port(host):
+    nodemanager = host.socket("tcp://0.0.0.0:%s" % config["nodemanager"]["port"])
 
+    assert nodemanager.is_listening

@@ -1,9 +1,7 @@
 - name: Message
   debug:
-    msg: "Creating Node Manager for server '{{ managedserver.name }}' in domain '{{ domain.name }}'"
+    msg: "Creating Node Manager for domain '{{ domain.name }}'"
   tags:
-    - domain
-    - managedserver
     - nodemanager
 
 - name: Stage nodemanager scripts
@@ -13,7 +11,7 @@
     owner: oracle
     group: oinstall
   with_items:
-    - { 'src': "templates/nodemanager/nodemanager.service.j2", 'dest' : "/usr/lib/systemd/system/nodemanager.service" }
+    - { 'src': "templates/nodemanager/nodemanager.service.j2", 'dest' : "/usr/lib/systemd/system/nodemanager_{{ domain.name }}.service" }
     - { 'src': "templates/nodemanager/nodemanager.domains.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.domains" }
     - { 'src': "templates/nodemanager/nodemanager.properties.j2", 'dest' : "{{ domain.path }}/{{ domain.name }}/nodemanager/nodemanager.properties" }
   when: ansible_distribution_major_version == '7'
@@ -25,7 +23,7 @@
 - name: Start nodemanager
   systemd:
     state: started
-    name: nodemanager
+    name: "nodemanager_{{ domain.name }}"
     daemon_reload: yes
     enabled: yes
   when: ansible_distribution_major_version == '7'
