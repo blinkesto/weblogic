@@ -68,3 +68,10 @@
     loop_var: domain_items
   tags:
     - stop
+
+- include: stop_nm.yml domain="{{ domain_items }}"
+  with_items: "{{ domains }}"
+  loop_control:
+    loop_var: domain_items
+  tags:
+    - stop
