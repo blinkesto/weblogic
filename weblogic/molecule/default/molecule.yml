@@ -11,8 +11,8 @@ platforms:
 #  - name: instance1
 #    image: centos:6
 #    publish_all_ports: true
-#    port_bindings:
-#      - 17001:7001
+#    published_ports:
+#      - 0.0.0.0:17001:7001/tcp
 #    volumes:
 #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 #    privileged: True
@@ -23,6 +23,8 @@ platforms:
     publish_all_ports: true
     port_bindings:
       - 7001:7001
+    published_ports:
+      - 0.0.0.0:7001:7001/tcp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     # Failed to get D-Bus connection: Operation not permitted
