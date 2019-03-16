@@ -2,7 +2,7 @@
 - name: Flatten vars
   template:
     src: vars/main.yml
-    dest: /Users/koydooley/PycharmProjects/molecule/weblogic/molecule/default/tests/flat.yml
+    dest: /Users/kdooley/PycharmProjects/weblogic/weblogic/molecule/default/tests/flat.yml
   delegate_to: localhost
 
 - name: Add group
