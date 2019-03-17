@@ -22,22 +22,25 @@ nodemanager_template: &nodemanager_template
   lifecycle_dir: "{{ oracle_base }}/lifecycle/nodemanager"
   home: ""
 
-managedserver_template: &managedserver_template
+server_template: &server_template
   port: "7001"
 
 
 domain_template: &domain_template
   path: "{{ domain_base }}"
   adminserver: "AdminServer"
+  adminport: 7001
   template_dir: templates/domain
   nodemanager:
     <<: *nodemanager_template
     port: 5556
   managedservers:
-    - <<: *managedserver_template
+    - <<: *server_template
       name: "ms1"
       port: "7001"
-
+    - <<: *server_template
+      name: "ms2"
+      port: "7001" # Over ride
 # ----------------------------------------------------------------------------------------------------------------------
 # Definable crap
 # ----------------------------------------------------------------------------------------------------------------------
@@ -49,12 +52,12 @@ domains:
   - <<: *domain_template
     name: domain1
     managedservers:
-      - <<: *managedserver_template
+      - <<: *server_template
         name: "ms1"
-        port: "7001"
-      - <<: *managedserver_template
+        port: "8100"
+      - <<: *server_template
         name: "ms2"
-        port: "8001"
+        port: "8200"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Should not need to change below this

@@ -3,6 +3,10 @@
 # Main ansible file used to call other files.
 # Each included file should contain all the tasks necessary to complete that part of the installation.
 # ----------------------------------------------------------------------------------------------------------------------
+- include: print_vars.yml
+  tags:
+    - debug
+
 - include: "distribution/{{ ansible_distribution }}/{{ ansible_distribution_major_version }}/prereq.yml"
   tags:
     - java

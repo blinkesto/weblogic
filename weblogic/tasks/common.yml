@@ -2,7 +2,7 @@
 - name: Flatten vars
   template:
     src: vars/main.yml
-    dest: /Users/kdooley/PycharmProjects/weblogic/weblogic/molecule/default/tests/flat.yml
+    dest: "{{ playbook_dir }}/tests/flat.yml"
   delegate_to: localhost
 
 - name: Add group

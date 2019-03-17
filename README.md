@@ -1,5 +1,11 @@
-Molecule
+Weblogic Ansible Role
 ------------
+Role used to install weblogic
+
+Usage
+------------
+
+
 molecule create 
 molecule converge
 molecule verify

@@ -1,5 +1,5 @@
 ---
-- name: Start nodemanager
+- name: Stop nodemanager
   service:
     name: "nodemanager_{{ domain.name }}"
     state: stopped
@@ -9,7 +9,7 @@
     - stop
     - nodemanager
 
-- name: Start nodemanager
+- name: Stop nodemanager
   systemd:
     state: stopped
     name: "nodemanager_{{ domain.name }}"
