@@ -1,20 +1,10 @@
 ---
 # ----------------------------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------------------------
-os_user: oracle
-os_group: oinstall
-admin_user: "weblogic"
-admin_password: "bread4all"
-app_base: /opt
-oracle_base: "{{ app_base }}/oracle"
-
-
-# ----------------------------------------------------------------------------------------------------------------------
 # Object templates do not touch
 # ----------------------------------------------------------------------------------------------------------------------
 nodemanager_template: &nodemanager_template
-  user: "{{ admin_user }}"
-  password: "{{ admin_password }}"
+  user: "{{ admin_user | default('weblogic') }}"
+  password: "{{ admin_password | default('welcome1') }}"
   host: "{{ inventory_hostname }}"
   address:
   port: 5556
@@ -41,23 +31,6 @@ domain_template: &domain_template
     - <<: *server_template
       name: "ms2"
       port: "7001" # Over ride
-# ----------------------------------------------------------------------------------------------------------------------
-# Definable crap
-# ----------------------------------------------------------------------------------------------------------------------
-
-weblogic_version: "12.2.1.3.0"
-java_minor: "161"
-
-domains:
-  - <<: *domain_template
-    name: domain1
-    managedservers:
-      - <<: *server_template
-        name: "ms1"
-        port: "8100"
-      - <<: *server_template
-        name: "ms2"
-        port: "8200"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Should not need to change below this
@@ -68,9 +41,7 @@ wl_home: "{{ mw_home }}/wlserver"
 wls_home: "{{ wl_home }}/server"
 oracle_common_home: "{{ mw_home }}/oracle_common"
 
-java_major: "8"
-java_version: "1.{{ java_major }}.0_{{ java_minor }}"
-
+java_version: "1.{{ java_major | default('8') }}.0_{{ java_minor | default('161') }}"
 
 # Variables that reference top level variables
 # Installer paths
@@ -90,7 +61,7 @@ wlst:
 
 common:
   install_dirs:
-    - "{{ app_base }}"
+    - "{{ app_base | default('/opt') }}"
     - "{{ oracle_base }}"
     - "{{ stage_dir }}"
 
@@ -102,3 +73,29 @@ weblogic:
   inventory_loc: "{{ oracle_base }}/oraInventory"
   install:
     binary: "fmw_{{ weblogic_version }}_wls.jar"
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Definable crap
+# ----------------------------------------------------------------------------------------------------------------------
+
+weblogic_version: "12.2.1.3.0"
+java_major: "8"
+java_minor: "161"
+admin_user: "weblogic"
+admin_password: "bread4all"
+os_user: oracle
+os_group: oinstall
+app_base: /opt
+oracle_base: "{{ app_base | default('/opt') }}/oracle"
+
+domains:
+  - <<: *domain_template
+    name: domain1
+    managedservers:
+      - <<: *server_template
+        name: "ms1"
+        port: "8100"
+      - <<: *server_template
+        name: "ms2"
+        port: "8200"
+

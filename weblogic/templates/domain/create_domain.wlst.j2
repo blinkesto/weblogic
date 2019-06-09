@@ -16,7 +16,7 @@ set('ListenPort', {{ domain.adminport }} );
 
 # Setting the username/password
 cd('/Security/base_domain/User/weblogic');
-cmo.setPassword('bread4all');
+cmo.setPassword('{{ admin_password }}');
 
 # Set some important domain options
 setOption('ServerStartMode', 'prod');
